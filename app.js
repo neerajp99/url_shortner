@@ -13,6 +13,22 @@ app.use(
 );
 app.use(bodyParser.json());
 
+// database configuration
+const db = require("./config/keys").mongoURI;
+
+// establish database connection
+mongoose
+  .connect(
+    db,
+    { useNewUrlParser: true }
+  )
+  .then(() => {
+    console.log("database connected successfully");
+  })
+  .catch(error => {
+    console.log(error);
+  });
+
 app.get("/", (req, res) => {
   res.json({
     message: "URL Shortner"
