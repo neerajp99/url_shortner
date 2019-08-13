@@ -33,7 +33,8 @@ router.post("/url", (req, res) => {
           initialUrl: req.body.initialUrl,
           shortUrl: shortUrl,
           baseUrl: req.body.baseUrl,
-          updatedAt: updatedAt
+          updatedAt: updatedAt,
+          urlCode: generatedString
         })
           .save()
           .then(data => {
@@ -51,8 +52,17 @@ router.post("/url", (req, res) => {
 // @description Retrieve URL
 // @access Public
 router.get("/url/:link", (req, res) => {
-  res.json({
-    message: "Router works!"
+  Url.findOne({
+    urlCode: req.params.link
+  }).then(data => {
+    if (data) {
+      res.json({
+        data
+      });
+      res.redirect(data.initialUrl);
+    } else {
+      res.status(404).json("Page not found!");
+    }
   });
 });
 
