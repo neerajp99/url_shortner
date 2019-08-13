@@ -7,14 +7,19 @@ const shortid = require("short-id");
 // bring in url model
 const Url = require("../../models/Url");
 
-router.get("/url/:link", (req, res) => {
-  res.json({
-    message: "Router works!"
-  });
-});
-
+// @route POST /api/url/url
+// @description Create Shortened url
+// @access Public
 router.post("/url", (req, res) => {
   console.log("User had requested to shorten url");
+  const generatedString = shortid.generate();
+  const updatedAt = new Date();
+
+  if (validateURL(req.body.baseUrl.trim())) {
+    console.log("Base Url validated");
+  } else {
+    return res.status(400).json("Invalid Base url");
+  }
 
   if (validateURL(req.body.initialUrl.trim())) {
     Url.findOne({
@@ -23,8 +28,12 @@ router.post("/url", (req, res) => {
       if (url) {
         res.status(200).json(url);
       } else {
+        const shortUrl = req.body.baseUrl + "/" + generatedString;
         const newUrl = new Url({
-          initialUrl: req.body.initialUrl
+          initialUrl: req.body.initialUrl,
+          shortUrl: shortUrl,
+          baseUrl: req.body.baseUrl,
+          updatedAt: updatedAt
         })
           .save()
           .then(data => {
@@ -36,6 +45,15 @@ router.post("/url", (req, res) => {
       }
     });
   }
+});
+
+// @route GET /api/url/url/:link
+// @description Retrieve URL
+// @access Public
+router.get("/url/:link", (req, res) => {
+  res.json({
+    message: "Router works!"
+  });
 });
 
 module.exports = router;
