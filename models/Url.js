@@ -5,18 +5,18 @@ const UrlSchema = new Schema({
   initialUrl: {
     type: String
   },
-  urlCode: {
+  shortUrl: {
     type: String
   },
-  shortenUrl: {
+  baseUrl: {
     type: String
   },
   createdAt: {
-    type: String,
+    type: Date,
     default: Date.now
   },
   updatedAt: {
-    type: String,
+    type: Date,
     default: Date.now
   }
 });
