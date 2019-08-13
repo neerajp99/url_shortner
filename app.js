@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const url = require("./routes/api/url");
+const ShortId = require("short-id");
 
 // initializes app as express
 const app = express();
@@ -34,6 +36,10 @@ app.get("/", (req, res) => {
     message: "URL Shortner"
   });
 });
+
+// use route
+app.use("/api/url", url);
+
 // Initializing the port
 const port = process.env.PORT || 4001;
 app.listen(port, () => {
