@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import InputFieldGroup from "./commons/InputFieldGroup";
+import axios from "axios";
 
 class Homepage extends Component {
   state = {
-    baseUrl: "localhost",
+    baseUrl: "https://localhost",
     initialUrl: "",
     shortUrl: "",
     newurl: "",
@@ -12,9 +13,27 @@ class Homepage extends Component {
   };
 
   onChange = event => {
-    [event.target.name] = event.target.value;
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+    console.log(this.state.initialUrl);
   };
-  
+
+  onSubmit = event => {
+    event.preventDefault();
+    axios
+      .post("/api/url/url", {
+        initialUrl: this.state.initialUrl,
+        baseUrl: this.state.baseUrl
+      })
+      .then(res => {
+        console.log(res.data.newUrl);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   render() {
     return (
       <div className="container">
@@ -26,7 +45,7 @@ class Homepage extends Component {
               value={this.state.initialUrl}
               onChange={this.onChange}
             />
-            <button></button>
+            <button onClick={this.onSubmit}> Submit </button>
           </div>
         </div>
       </div>
