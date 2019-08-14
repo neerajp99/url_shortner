@@ -18,6 +18,9 @@ const UrlSchema = new Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  newUrl: {
+    type: String
   }
 });
 

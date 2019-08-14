@@ -34,7 +34,7 @@ router.post("/url", (req, res) => {
           shortUrl: shortUrl,
           baseUrl: req.body.baseUrl,
           updatedAt: updatedAt,
-          urlCode: generatedString
+          newUrl: generatedString
         })
           .save()
           .then(data => {
@@ -53,7 +53,7 @@ router.post("/url", (req, res) => {
 // @access Public
 router.get("/url/:link", (req, res) => {
   Url.findOne({
-    urlCode: req.params.link
+    newUrl: req.params.link
   }).then(data => {
     if (data) {
       res.json({
