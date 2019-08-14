@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import InputFieldGroup from "./commons/InputFieldGroup";
 import axios from "axios";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 class Homepage extends Component {
   state = {
@@ -10,7 +11,8 @@ class Homepage extends Component {
     newUrl: "",
     updatedAt: "",
     createdAt: "",
-    listOfUrl: []
+    listOfUrl: [],
+    copied: "false"
   };
 
   onChange = event => {
@@ -29,13 +31,16 @@ class Homepage extends Component {
       })
       .then(res => {
         console.log(res.data.newUrl);
-        this.setState({
-          shortUrl: res.data.shortUrl,
-          listOfUrl: [...this.state.listOfUrl, res.data.shortUrl],
-          newUrl: res.data.newUrl,
-          updatedAt: res.data.updatedAt,
-          createdAt: res.data.createdAt
-        });
+        if (res.data.newUrl) {
+          this.setState({
+            shortUrl: res.data.shortUrl,
+            listOfUrl: [...this.state.listOfUrl, res.data.shortUrl],
+            newUrl: res.data.newUrl,
+            updatedAt: res.data.updatedAt,
+            createdAt: res.data.createdAt
+          });
+          console.log("works");
+        }
       })
       .catch(error => {
         console.log(error);
@@ -43,10 +48,12 @@ class Homepage extends Component {
   };
 
   componentDidUpdate() {
-    const urls = JSON.stringify(this.state.listOfUrl);
-    localStorage.setItem("shortUrl", urls);
+    if (this.state.listOfUrl) {
+      const urls = JSON.stringify(this.state.listOfUrl);
+      localStorage.setItem("shortUrl", urls);
+    }
   }
-  componentDidMount = () => {
+  componentDidMount() {
     const jsonData = localStorage.getItem("shortUrl");
     const jsonParse = JSON.parse(jsonData);
     if (jsonData) {
@@ -54,7 +61,7 @@ class Homepage extends Component {
         listOfUrl: jsonParse
       });
     }
-  };
+  }
 
   render() {
     return (
@@ -74,11 +81,21 @@ class Homepage extends Component {
           <br />
           <div className="col-md-8">
             <div className="col-md-4">
-              {this.state.list && (
-                <h3 className="text-sm-left text-muted">
-                  {this.state.listUrl.map(url => ({ url }))}
-                </h3>
-              )}
+              {this.state.listOfUrl &&
+                this.state.listOfUrl.map(url => (
+                  <div key={this.state.listOfUrl.indexOf(url)}>
+                    <h4>{url}</h4>
+                    <CopyToClipboard
+                      text={url}
+                      onCopy={() => this.setState({ copied: true })}
+                    >
+                      <button onClick={this.copyToClipboard} url={url}>
+                        {" "}
+                        Copy{" "}
+                      </button>
+                    </CopyToClipboard>
+                  </div>
+                ))}
             </div>
           </div>
         </div>
