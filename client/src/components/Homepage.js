@@ -7,9 +7,10 @@ class Homepage extends Component {
     baseUrl: "https://localhost",
     initialUrl: "",
     shortUrl: "",
-    newurl: "",
+    newUrl: "",
     updatedAt: "",
-    createdAt: ""
+    createdAt: "",
+    listOfUrl: []
   };
 
   onChange = event => {
@@ -28,24 +29,57 @@ class Homepage extends Component {
       })
       .then(res => {
         console.log(res.data.newUrl);
+        this.setState({
+          shortUrl: res.data.shortUrl,
+          listOfUrl: [...this.state.listOfUrl, res.data.shortUrl],
+          newUrl: res.data.newUrl,
+          updatedAt: res.data.updatedAt,
+          createdAt: res.data.createdAt
+        });
       })
       .catch(error => {
         console.log(error);
       });
   };
 
+  componentDidUpdate() {
+    const urls = JSON.stringify(this.state.listOfUrl);
+    localStorage.setItem("shortUrl", urls);
+  }
+  componentDidMount = () => {
+    const jsonData = localStorage.getItem("shortUrl");
+    const jsonParse = JSON.parse(jsonData);
+    if (jsonData) {
+      this.setState({
+        listOfUrl: jsonParse
+      });
+    }
+  };
+
   render() {
     return (
       <div className="container">
         <div className="landing row">
-          <div className="col-md-12 text-center">
-            <InputFieldGroup
-              placeholder="Shorten your link"
-              name="initialUrl"
-              value={this.state.initialUrl}
-              onChange={this.onChange}
-            />
-            <button onClick={this.onSubmit}> Submit </button>
+          <div className="col-md-8 m-auto">
+            <form onSubmit={this.onSubmit}>
+              <InputFieldGroup
+                placeholder="Shorten your link"
+                name="initialUrl"
+                value={this.state.initialUrl}
+                onChange={this.onChange}
+              />
+              <input type="submit" className="btn btn-info " />
+            </form>
+          </div>
+          <br />
+          <div className="col-md-8">
+            <div className="col-md-4">
+              {this.state.list && (
+                <h3 className="text-sm-left text-muted">
+                  {this.state.listUrl.map(url => ({ url }))}
+                </h3>
+              )}
+            </div>
           </div>
         </div>
       </div>
