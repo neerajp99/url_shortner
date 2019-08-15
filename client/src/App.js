@@ -4,12 +4,15 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Homepage from "./components/Homepage";
 
+
 class App extends Component {
   render() {
     return (
       <div>
         <Router>
-          <Route exact path="/homepage" render={() => <Homepage />} />
+
+          <Route exact path="/" render={() => <Homepage />} />
+
         </Router>
       </div>
     );
