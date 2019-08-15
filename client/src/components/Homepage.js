@@ -19,7 +19,6 @@ class Homepage extends Component {
     this.setState({
       [event.target.name]: event.target.value
     });
-    console.log(this.state.initialUrl);
   };
 
   onSubmit = event => {
@@ -30,11 +29,13 @@ class Homepage extends Component {
         baseUrl: this.state.baseUrl
       })
       .then(res => {
-        console.log(res.data.newUrl);
         if (res.data.newUrl) {
           this.setState({
             shortUrl: res.data.shortUrl,
-            listOfUrl: [...this.state.listOfUrl, res.data.shortUrl],
+            listOfUrl: [
+              ...this.state.listOfUrl,
+              [res.data.shortUrl, res.data.newUrl, res.data.initialUrl]
+            ],
             newUrl: res.data.newUrl,
             updatedAt: res.data.updatedAt,
             createdAt: res.data.createdAt
@@ -63,6 +64,11 @@ class Homepage extends Component {
     }
   }
 
+  openLink = event => {
+    event.preventDefault();
+    axios.get();
+  };
+
   render() {
     return (
       <div className="container">
@@ -84,16 +90,31 @@ class Homepage extends Component {
               {this.state.listOfUrl &&
                 this.state.listOfUrl.map(url => (
                   <div key={this.state.listOfUrl.indexOf(url)}>
-                    <h4>{url}</h4>
+                    <h5 className="text-muted">{url[2]}</h5>
+                    <h4>{url[0]}</h4>
                     <CopyToClipboard
-                      text={url}
+                      text={url[0]}
                       onCopy={() => this.setState({ copied: true })}
                     >
-                      <button onClick={this.copyToClipboard} url={url}>
-                        {" "}
-                        Copy{" "}
-                      </button>
+                      <button onClick={this.copyToClipboard}> Copy </button>
                     </CopyToClipboard>
+                    <button
+                      onClick={e => {
+                        e.preventDefault();
+                        axios
+                          .get(`/api/url/url/${url[1]}`)
+                          .then(data => {
+                            console.log(data.data.data.initialUrl);
+                            // window.location.href = data.data.data.initialUrl;
+                            window.open(data.data.data.initialUrl, "_blank");
+                          })
+                          .catch(err => {
+                            console.log(err);
+                          });
+                      }}
+                    >
+                      Open Website
+                    </button>
                   </div>
                 ))}
             </div>
