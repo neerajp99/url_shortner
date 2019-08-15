@@ -113,7 +113,7 @@ class Homepage extends Component {
                           });
                       }}
                     >
-                      Open Website
+                      Open
                     </button>
                   </div>
                 ))}
