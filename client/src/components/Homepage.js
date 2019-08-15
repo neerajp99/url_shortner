@@ -64,16 +64,26 @@ class Homepage extends Component {
     }
   }
 
-  openLink = event => {
+  clearLocal = event => {
     event.preventDefault();
-    axios.get();
+    this.setState({
+      listOfUrl: ""
+    });
+    localStorage.removeItem("shortUrl");
+    window.location.reload();
   };
 
   render() {
     return (
-      <div className="container">
-        <div className="landing row">
-          <div className="col-md-8 m-auto">
+      <div className="landing row">
+        <hr className="homeHr" />
+        <div className="col-md-6 landing-text">
+          <h4 className="landing-text-h4">
+            Links that makes your url simpler.
+          </h4>
+
+          <br />
+          <div className="urlForm">
             <form onSubmit={this.onSubmit}>
               <InputFieldGroup
                 placeholder="Shorten your link"
@@ -81,45 +91,72 @@ class Homepage extends Component {
                 value={this.state.initialUrl}
                 onChange={this.onChange}
               />
-              <input type="submit" className="btn btn-info " />
+              <button type="submit" className="submit-button">
+                Submit
+              </button>
+              <button onClick={this.clearLocal} className="submit-button">
+                {" "}
+                Clear{" "}
+              </button>
             </form>
           </div>
           <br />
-          <div className="col-md-8">
-            <div className="col-md-4">
-              {this.state.listOfUrl &&
-                this.state.listOfUrl.map(url => (
-                  <div key={this.state.listOfUrl.indexOf(url)}>
-                    <h5 className="text-muted">{url[2]}</h5>
-                    <h4>{url[0]}</h4>
-                    <CopyToClipboard
-                      text={url[0]}
-                      onCopy={() => this.setState({ copied: true })}
-                    >
-                      <button onClick={this.copyToClipboard}> Copy </button>
-                    </CopyToClipboard>
-                    <button
-                      onClick={e => {
-                        e.preventDefault();
-                        axios
-                          .get(`/api/url/url/${url[1]}`)
-                          .then(data => {
-                            console.log(data.data.data.initialUrl);
-                            // window.location.href = data.data.data.initialUrl;
-                            window.open(data.data.data.initialUrl, "_blank");
-                          })
-                          .catch(err => {
-                            console.log(err);
-                          });
-                      }}
-                    >
-                      Open
-                    </button>
-                  </div>
-                ))}
-            </div>
-          </div>
+          <br />
         </div>
+        {this.state.listOfUrl.length > 0 && (
+          <div className="url-display">
+            {this.state.listOfUrl &&
+              this.state.listOfUrl.map(url => (
+                <div
+                  className="url-list-div"
+                  key={this.state.listOfUrl.indexOf(url)}
+                >
+                  <ul className="url-list">
+                    <li>
+                      <h5 className="text-muted url-initial">{url[2]}</h5>
+                    </li>
+                    <li>
+                      <h3 className="url-new">{url[0]}</h3>
+                    </li>
+                    <li>
+                      <CopyToClipboard
+                        text={url[0]}
+                        onCopy={() => this.setState({ copied: true })}
+                      >
+                        <button
+                          onClick={this.copyToClipboard}
+                          className="copy-button"
+                        >
+                          {" "}
+                          Copy{" "}
+                        </button>
+                      </CopyToClipboard>
+                    </li>
+                    <li>
+                      <button
+                        className="open-button"
+                        onClick={e => {
+                          e.preventDefault();
+                          axios
+                            .get(`/api/url/url/${url[1]}`)
+                            .then(data => {
+                              console.log(data.data.data.initialUrl);
+                              // window.location.href = data.data.data.initialUrl;
+                              window.open(data.data.data.initialUrl, "_blank");
+                            })
+                            .catch(err => {
+                              console.log(err);
+                            });
+                        }}
+                      >
+                        Open
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              ))}
+          </div>
+        )}
       </div>
     );
   }
