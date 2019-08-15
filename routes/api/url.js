@@ -11,7 +11,7 @@ const Url = require("../../models/Url");
 // @description Create Shortened url
 // @access Public
 router.post("/url", (req, res) => {
-  console.log("User had requested to shorten url");
+  console.log("User has requested to shorten url");
   const generatedString = shortid.generate();
   const updatedAt = new Date();
 
@@ -26,7 +26,7 @@ router.post("/url", (req, res) => {
       initialUrl: req.body.initialUrl
     }).then(url => {
       if (url) {
-        res.status(200).json(url);
+        res.status(200).json(url + "already exist");
       } else {
         const shortUrl = req.body.baseUrl + "/" + generatedString;
         const newUrl = new Url({
@@ -38,10 +38,10 @@ router.post("/url", (req, res) => {
         })
           .save()
           .then(data => {
-            res.json(data);
+            res.status(200).json(data);
           })
           .catch(error => {
-            console.log(error);
+            res.status(401).json(error);
           });
       }
     });
