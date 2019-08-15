@@ -7,7 +7,7 @@ const InputFieldGroup = ({ placeholder, name, onChange, value }) => {
     <div className="input-group mb-3">
       <div className="input-group-prepend">
         <input
-          className={classnames("form-control form-control-lg")}
+          className={classnames("url-form-input")}
           placeholder={placeholder}
           name={name}
           onChange={onChange}
